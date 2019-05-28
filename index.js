@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const apiRouter = require('./api/routes/api-routes');
 const db = require('./config/database');
@@ -8,8 +9,9 @@ const db = require('./config/database');
 const app = express();
 const port = 3030;
 
-app.use(bodyParser.json());
+app.use(cors());
 
+app.use(bodyParser.json());
 app.use(bodyParser.text({ type: 'text/plain' }));
 
 app.use('/api', apiRouter);
