@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors');
 
 const apiRouter = require('./api/routes/api-routes');
 const db = require('./config/database');
@@ -9,7 +8,12 @@ const db = require('./config/database');
 const app = express();
 const port = 3030;
 
-app.use(cors());
+// Accept CORS
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 
 app.use(bodyParser.json());
 app.use(bodyParser.text({ type: 'text/plain' }));
