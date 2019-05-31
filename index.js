@@ -2,8 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const db = require('./models');
 const apiRouter = require('./api/routes/api-routes');
-const db = require('./config/database');
 
 const app = express();
 const port = 3030;
@@ -24,12 +24,13 @@ app.get('/', (req, res) => res.json('App get works'));
 app.listen(port, () => console.log(`Server is running on port ${port}`));
 
 // DB connection test
-db.authenticate()
+db.sequelize
+  .authenticate()
   .then(() => {
     console.log('Connection to DB has been established successfully.');
   })
-  .catch(err => {
-    console.error('Unable to connect to the DB:', err);
+  .catch(error => {
+    console.error('Unable to connect to the DB:', error);
   });
 
 module.exports = app;

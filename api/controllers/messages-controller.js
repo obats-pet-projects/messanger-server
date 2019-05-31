@@ -1,14 +1,14 @@
-const Message = require('../models/message-model');
+const models = require('../../models');
 
 const create = (req, res) => {
-  const { title, message } = req.body;
+  const { subject, message } = req.body;
 
-  if (!title || !message) {
+  if (!subject || !message) {
     return res.status(422).send('Please, fill up all fields!');
   }
 
-  Message.create({
-    title,
+  models.Message.create({
+    subject,
     message
   })
     .then(() => res.status(200).send('Message sent'))
@@ -16,7 +16,7 @@ const create = (req, res) => {
 };
 
 const getAll = (req, res) => {
-  Message.findAll()
+  models.Message.findAll()
     .then(message => res.status(200).send(message))
     .catch(error => res.status(500).send(error));
 };
