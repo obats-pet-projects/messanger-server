@@ -1,4 +1,5 @@
 const models = require('../../models');
+const mod = require('../../models');
 
 const create = (req, res) => {
   const { subject, message } = req.body;
@@ -21,4 +22,24 @@ const getAll = (req, res) => {
     .catch(error => res.status(500).send(error));
 };
 
-module.exports = { create, getAll };
+const deleteAll = (req, res) => {
+  const { messagesIds } = req.body;
+
+  models.Message.destroy({
+    where: { id: messagesIds }
+  })
+    .then(() => res.status(200).send('Messages were successfully deleted'))
+    .catch(error => res.status(500).send(error));
+};
+
+const deleteOne = (req, res) => {
+  const { id } = req.params;
+
+  models.Message.destroy({
+    where: { id: id }
+  })
+    .then(() => res.status(200).send('Message was successfully deleted'))
+    .catch(error => res.status(500).send(error));
+};
+
+module.exports = { create, getAll, deleteOne, deleteAll };
