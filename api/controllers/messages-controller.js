@@ -16,8 +16,12 @@ const create = (req, res) => {
     .catch(error => res.status(500).send(error));
 };
 
-const getAll = (req, res) => {
-  models.Message.findAll()
+const getByCategory = (req, res) => {
+  const { category } = req.params;
+
+  models.Message.findAll({
+    where: { tag: category }
+  })
     .then(message => res.status(200).send(message))
     .catch(error => res.status(500).send(error));
 };
@@ -42,4 +46,4 @@ const deleteOne = (req, res) => {
     .catch(error => res.status(500).send(error));
 };
 
-module.exports = { create, getAll, deleteOne, deleteAll };
+module.exports = { create, getByCategory, deleteOne, deleteAll };
