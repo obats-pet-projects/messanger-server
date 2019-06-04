@@ -15,10 +15,34 @@ const create = (req, res) => {
     .catch(error => res.status(500).send(error));
 };
 
-const getAll = (req, res) => {
-  models.Message.findAll()
+const getByCategory = (req, res) => {
+  const { category } = req.params;
+
+  models.Message.findAll({
+    where: { tag: category }
+  })
     .then(message => res.status(200).send(message))
     .catch(error => res.status(500).send(error));
 };
 
-module.exports = { create, getAll };
+const deleteAll = (req, res) => {
+  const { messagesIds } = req.body;
+
+  models.Message.destroy({
+    where: { id: messagesIds }
+  })
+    .then(() => res.status(200).send('Messages were successfully deleted'))
+    .catch(error => res.status(500).send(error));
+};
+
+const deleteOne = (req, res) => {
+  const { id } = req.params;
+
+  models.Message.destroy({
+    where: { id: id }
+  })
+    .then(() => res.status(200).send('Message was successfully deleted'))
+    .catch(error => res.status(500).send(error));
+};
+
+module.exports = { create, getByCategory, deleteOne, deleteAll };
