@@ -1,4 +1,5 @@
 const models = require('../../models');
+const mod = require('../../models');
 
 const create = (req, res) => {
   const { subject, message } = req.body;
