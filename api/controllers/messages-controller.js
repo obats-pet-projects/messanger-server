@@ -26,6 +26,16 @@ const getByCategory = (req, res) => {
     .catch(error => res.status(500).send(error));
 };
 
+const getOne = (req, res) => {
+  const { id } = req.params;
+
+  models.Message.findOne({
+    where: { id: id }
+  })
+    .then(message => res.status(200).send(message))
+    .catch(error => res.status(500).send(error));
+};
+
 const deleteAll = (req, res) => {
   const { messagesIds } = req.body;
 
@@ -46,4 +56,4 @@ const deleteOne = (req, res) => {
     .catch(error => res.status(500).send(error));
 };
 
-module.exports = { create, getByCategory, deleteOne, deleteAll };
+module.exports = { create, getByCategory, getOne, deleteOne, deleteAll };
