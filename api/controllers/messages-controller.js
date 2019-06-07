@@ -1,5 +1,4 @@
 const models = require('../../models');
-const mod = require('../../models');
 
 const create = (req, res) => {
   const { subject, message } = req.body;
@@ -17,7 +16,7 @@ const create = (req, res) => {
 };
 
 const getByCategory = (req, res) => {
-  const { category } = req.params;
+  const { category } = req.query;
 
   models.Message.findAll({
     where: { tag: category }
@@ -34,6 +33,14 @@ const getOne = (req, res) => {
   })
     .then(message => res.status(200).send(message))
     .catch(error => res.status(500).send(error));
+};
+
+const updateCategory = (req, res) => {
+  const { messagesIds, category } = req.body;
+
+  models.Message.update({ tag: category }, { where: { id: messagesIds } })
+    .then(() => res.status(200).send(`Message(s) were marked as ${category}`))
+    .catch(error => console.log(error));
 };
 
 const deleteAll = (req, res) => {
@@ -56,4 +63,4 @@ const deleteOne = (req, res) => {
     .catch(error => res.status(500).send(error));
 };
 
-module.exports = { create, getByCategory, getOne, deleteOne, deleteAll };
+module.exports = { create, getByCategory, getOne, updateCategory, deleteOne, deleteAll };
