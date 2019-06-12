@@ -19,7 +19,8 @@ const getByCategory = (req, res) => {
   const { category } = req.query;
 
   models.Message.findAll({
-    where: { tag: category }
+    where: { tag: category },
+    order: [['createdAt', 'DESC']]
   })
     .then(message => res.status(200).send(message))
     .catch(error => res.status(500).send(error));
