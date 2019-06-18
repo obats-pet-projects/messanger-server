@@ -11,15 +11,8 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
 
-  User.generateAuthToken = function() {
-    const token = jwt.sign(
-      {
-        id: this._id
-      },
-      process.env.JWT_KEY,
-      { expiresIn: '30d' }
-    );
-    return token;
+  User.generateAuthToken = id => {
+    return jwt.sign({ id }, process.env.JWT_KEY, { expiresIn: '30d' });
   };
 
   User.associate = function(models) {
