@@ -43,7 +43,7 @@ const signUp = async (req, res) => {
   user.password = await bcrypt.hashSync(password, salt);
   await user.save();
 
-  const token = models.User.generateAuthToken();
+  const token = models.User.generateAuthToken(user.id);
 
   res
     .header('access-token', token)
