@@ -1,4 +1,5 @@
-'use strict';
+const jwt = require('jsonwebtoken');
+
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
     'User',
@@ -9,6 +10,18 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
+
+  User.generateAuthToken = function() {
+    const token = jwt.sign(
+      {
+        id: this._id
+      },
+      process.env.JWT_KEY,
+      { expiresIn: '30d' }
+    );
+    return token;
+  };
+
   User.associate = function(models) {
     // associations can be defined here
   };
