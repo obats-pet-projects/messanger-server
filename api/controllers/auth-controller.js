@@ -78,8 +78,9 @@ const signIn = async (req, res) => {
       return res.status(400).json({ message: 'Invalid email or password!' });
     }
 
-    const token = models.User.generateAuthToken();
+    const token = models.User.generateAuthToken(user.id);
 
+    user.password = '';
     res
       .header('access-token', token)
       .status(200)
@@ -89,4 +90,15 @@ const signIn = async (req, res) => {
   }
 };
 
-module.exports = { signUp, signIn };
+const validateUser = async (req, res) => {
+  const { id } = req.decoded;
+
+  const user = await models.User.findOne({
+    where: { id: id }
+  });
+
+  user.password = '';
+  res.status(200).json(user);
+};
+
+module.exports = { signUp, signIn, validateUser };
