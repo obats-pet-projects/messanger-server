@@ -6,7 +6,7 @@ const db = require('./models');
 const apiRouter = require('./api/routes/api-routes');
 
 const app = express();
-const port = 3030;
+const port = process.env.PORT || 3030;
 
 // Accept CORS
 app.use((req, res, next) => {
