@@ -15,14 +15,16 @@ const signUp = async (req, res) => {
     }
 
     username = username.trim();
-    email = email.trim();
+    email = email.trim().toLowerCase();
 
     let user = await models.User.findOne({
       where: { username: username }
     });
 
     if (user) {
-      return res.status(422).json({ message: 'User with such username is already exist!' });
+      return res
+        .status(422)
+        .json({ field: 'username', message: 'User with such username is already exist!' });
     }
 
     user = await models.User.findOne({
@@ -30,7 +32,9 @@ const signUp = async (req, res) => {
     });
 
     if (user) {
-      return res.status(422).json({ message: 'User with such email is already exist!' });
+      return res
+        .status(422)
+        .json({ field: 'email', message: 'User with such email is already exist!' });
     }
 
     user = await models.User.create({
@@ -49,21 +53,22 @@ const signUp = async (req, res) => {
       .header('access-token', token)
       .status(200)
       .json({
-        message: 'User created!',
-        user: { username, email }
+        user: { user }
       });
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).json({ message: 'Server error. Please ty again later' });
   }
 };
 
 const signIn = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
 
     if (!email || !password) {
       return res.status(422).json({ message: 'Email and password are required!' });
     }
+
+    email = email.trim().toLowerCase();
 
     let user = await models.User.findOne({
       where: { email: email }
@@ -86,7 +91,7 @@ const signIn = async (req, res) => {
       .status(200)
       .json({ user });
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).json({ message: 'Server error. Please ty again later' });
   }
 };
 
