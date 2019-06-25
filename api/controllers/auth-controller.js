@@ -1,5 +1,8 @@
 const bcrypt = require('bcrypt');
+const Sequelize = require('sequelize');
 const models = require('../../models');
+
+const Op = Sequelize.Op;
 
 const signUp = async (req, res) => {
   try {
@@ -18,23 +21,15 @@ const signUp = async (req, res) => {
     email = email.trim().toLowerCase();
 
     let user = await models.User.findOne({
-      where: { username: username }
+      where: {
+        [Op.or]: [{ username }, { email }]
+      }
     });
 
     if (user) {
       return res
         .status(422)
-        .json({ field: 'username', message: 'User with such username is already exist!' });
-    }
-
-    user = await models.User.findOne({
-      where: { email: email }
-    });
-
-    if (user) {
-      return res
-        .status(422)
-        .json({ field: 'email', message: 'User with such email is already exist!' });
+        .json({ message: 'User with such username or email is already exist!' });
     }
 
     user = await models.User.create({
@@ -52,9 +47,7 @@ const signUp = async (req, res) => {
     res
       .header('access-token', token)
       .status(200)
-      .json({
-        user: { user }
-      });
+      .json({ user });
   } catch (error) {
     res.status(500).json({ message: 'Server error. Please ty again later' });
   }
@@ -71,7 +64,7 @@ const signIn = async (req, res) => {
     email = email.trim().toLowerCase();
 
     let user = await models.User.findOne({
-      where: { email: email }
+      where: { email }
     });
 
     if (!user) {
@@ -99,7 +92,7 @@ const validateUser = async (req, res) => {
   const { id } = req.decoded;
 
   const user = await models.User.findOne({
-    where: { id: id }
+    where: { id }
   });
 
   user.password = '';
