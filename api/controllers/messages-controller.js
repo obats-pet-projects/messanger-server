@@ -1,6 +1,6 @@
 const models = require('../../models');
 
-const create = (req, res) => {
+const createMessage = (req, res) => {
   const { subject, message } = req.body;
 
   if (!subject || !message) {
@@ -26,11 +26,11 @@ const getByCategory = (req, res) => {
     .catch(error => res.status(500).send(error));
 };
 
-const getOne = (req, res) => {
+const getOneMessage = (req, res) => {
   const { id } = req.params;
 
   models.Message.findOne({
-    where: { id: id }
+    where: { id }
   })
     .then(message => res.status(200).send(message))
     .catch(error => res.status(500).send(error));
@@ -44,7 +44,7 @@ const updateCategory = (req, res) => {
     .catch(error => console.log(error));
 };
 
-const deleteAll = (req, res) => {
+const deleteAllMessages = (req, res) => {
   const { messagesIds } = req.body;
 
   models.Message.destroy({
@@ -54,14 +54,21 @@ const deleteAll = (req, res) => {
     .catch(error => res.status(500).send(error));
 };
 
-const deleteOne = (req, res) => {
+const deleteOneMessage = (req, res) => {
   const { id } = req.params;
 
   models.Message.destroy({
-    where: { id: id }
+    where: { id }
   })
     .then(() => res.status(200).send('Message was successfully deleted'))
     .catch(error => res.status(500).send(error));
 };
 
-module.exports = { create, getByCategory, getOne, updateCategory, deleteOne, deleteAll };
+module.exports = {
+  createMessage,
+  getByCategory,
+  getOneMessage,
+  updateCategory,
+  deleteOneMessage,
+  deleteAllMessages
+};
