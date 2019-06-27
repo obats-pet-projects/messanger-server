@@ -49,7 +49,7 @@ const signUp = async (req, res) => {
       .status(200)
       .json({ user });
   } catch (error) {
-    res.status(500).json({ message: 'Server error. Please ty again later' });
+    res.status(500).json({ message: 'Server error. Please try again later' });
   }
 };
 
@@ -63,28 +63,29 @@ const signIn = async (req, res) => {
 
     email = email.trim().toLowerCase();
 
-    let user = await models.User.findOne({
+    const user = await models.User.findOne({
       where: { email }
     });
 
     if (!user) {
-      return res.status(400).json({ message: 'Invalid email or password!' });
+      return res.status(422).json({ message: 'Invalid email or password!' });
     }
 
     const validPassword = await bcrypt.compareSync(password, user.password);
     if (!validPassword) {
-      return res.status(400).json({ message: 'Invalid email or password!' });
+      return res.status(422).json({ message: 'Invalid email or password!' });
     }
+
+    delete user.dataValues.password;
 
     const token = models.User.generateAuthToken(user.id);
 
-    user.password = '';
     res
       .header('access-token', token)
       .status(200)
       .json({ user });
   } catch (error) {
-    res.status(500).json({ message: 'Server error. Please ty again later' });
+    res.status(500).json({ message: 'Server error. Please try again later' });
   }
 };
 
@@ -95,7 +96,12 @@ const validateUser = async (req, res) => {
     where: { id }
   });
 
-  user.password = '';
+  if (!user) {
+    return res.status(400).json({ message: 'Token is not valid' });
+  }
+
+  delete user.dataValues.password;
+
   res.status(200).json(user);
 };
 
